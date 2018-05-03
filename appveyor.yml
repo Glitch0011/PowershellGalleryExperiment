@@ -31,7 +31,7 @@ after_deploy:
 notifications:
   - provider: Email
     to:
-      - tom+appveyor@bonner.is
+      - tom@bonner.is
     subject: "Build {{status}}"
     message: "{{message}}"
     on_build_status_changed: true
