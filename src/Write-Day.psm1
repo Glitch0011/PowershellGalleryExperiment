@@ -13,6 +13,10 @@
 #   limitations under the License.
 function Write-Day
 {
+    <#
+    .Description
+    Write-Day outputs the full day
+    #>
     [CmdletBinding()]
     param (
         
