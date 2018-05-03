@@ -8,7 +8,7 @@ build_script:
   -  ps: .\Generate-Module.ps1  
 
 artifacts:
-  - path: deploy
+  - path: '**\*.nupkg'
 
 deploy:
   - provider: NuGet
