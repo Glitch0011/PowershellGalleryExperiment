@@ -14,7 +14,7 @@ $tags = $Env:Tags -split ";"
 # Generated
 $version = "$(Get-Date -Format yy.MM.dd).$($Env:APPVEYOR_BUILD_NUMBER)";
 
-$staging = New-Item ".\staging" -ItemType Directory
+$staging = New-Item ".\staging" -ItemType Directory -Force
 
 Write-Output "Installing Formatter"
 Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
@@ -27,7 +27,7 @@ Get-ChildItem -Path "src" -Filter "*.psm1" | ForEach-Object {
 $file = Get-ChildItem -Path $staging -Filter "psm1"
 
 Write-Output "Generating manifest"
-$psdFile = Join-Path -Path $staging -ChildPath $($Env:ModuleName).psd1
+$psdFile = Join-Path -Path $staging -ChildPath "$($Env:ModuleName).psd1"
 New-ModuleManifest -Path $psdFile -Description $Env:Description -Author $Env:Author -CompanyName $Env:Company -ModuleVersion $version -RootModule $file.Name -FunctionsToExport $functionsToExport -ProjectUri $Env:ProjectUri -LicenseUri $Env:LicenseUri -Tags $tags
 
 Write-Output "Copying misc files"
@@ -35,7 +35,7 @@ Copy-Item -Path "LICENSE" -Destination $staging
 Copy-Item -Path "README.md" -Destination $staging
 
 Write-Output "Generating catalog"
-New-FileCatalog -Path $staging -CatalogFilePath (Join-Path -Path $staging -ChildPath "$($Env:ModuleName)).cat")
+New-FileCatalog -Path $staging -CatalogFilePath (Join-Path -Path $staging -ChildPath "$($Env:ModuleName).cat")
 
 $tempNugetRepo = New-Item -ItemType Directory ".\nuget-feed\nuget\v2"
 $deployTarget = New-Item -ItemType Directory ".\deploy"
