@@ -1,6 +1,10 @@
 image:
   - Visual Studio 2017
 
+environment:
+  NuGetApiKey:
+    secure: vPuoV+7e5qgXDOi6iZOMgOGQDiA2H5rOvVaGO13SvePSehwTGHHE4W3hSPTlu0zL
+
 install:
   - ps: Write-Host "Startup"
 
@@ -17,6 +21,9 @@ deploy:
       secure: vPuoV+7e5qgXDOi6iZOMgOGQDiA2H5rOvVaGO13SvePSehwTGHHE4W3hSPTlu0zL
     skip_symbols: true
     artifact: /.*\.nupkg/
+
+deploy_script:
+  - ps: Publish-Module -Name (Get-Item ".\src\*.psd1").FullName -NuGetApiKey $Env:NuGetApiKey
 
 after_deploy:
   - ps: Write-Host "Successfully deployed"
