@@ -34,8 +34,9 @@ Write-Output "Copying misc files"
 Copy-Item -Path "LICENSE" -Destination $staging
 Copy-Item -Path "README.md" -Destination $staging
 
-Write-Output "Generating catalog"
-New-FileCatalog -Path $staging -CatalogFilePath (Join-Path -Path $staging -ChildPath "$($Env:ModuleName).cat")
+# Removed because when it isn't signed, it cases the install-module to fail
+#Write-Output "Generating catalog"
+#New-FileCatalog -Path $staging -CatalogFilePath (Join-Path -Path $staging -ChildPath "$($Env:ModuleName).cat")
 
 $tempNugetRepo = New-Item -ItemType Directory ".\nuget-feed\nuget\v2"
 $deployTarget = New-Item -ItemType Directory ".\deploy"
