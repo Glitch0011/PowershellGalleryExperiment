@@ -29,13 +29,6 @@ after_deploy:
   - ps: Write-Host "Successfully deployed"
 
 notifications:
-  - provider: Email
-    to:
-      - tom@bonner.is
-    subject: "Build {{status}}"
-    message: "{{message}}"
-    on_build_status_changed: true
-
   - provider: Webhook
     url:
       secure: 7ZT0ZVyDmNP7553URWST6Xz9+oHCE6WTRDPTqw1rvh8=
