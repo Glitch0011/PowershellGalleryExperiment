@@ -2,25 +2,40 @@ if (Test-Path ".\deploy") {
     Remove-Item ".\deploy" -Force -Recurse
 }
 
-if (Test-Path ".\src\*.psd1") {
-    Remove-Item ".\src\*.psd1" -Force
+if (Test-Path ".\staging") {
+    Remove-Item ".\staging" -Force -Recurse
 }
 
 # Properties
-$moduleName = "Write-Day"
-$description = "Writes the day to output"
 $company = $null
-$functionsToExport = @("Write-Day")
-$tags = @("Date", "Write");
-$project = "https://github.com/Glitch0011/PowershellGalleryExperiment";
-$license = "https://github.com/Glitch0011/PowershellGalleryExperiment/blob/master/LICENSE"
+$functionsToExport = $Env:FunctionsToExport -split ";"
+$tags = $Env:Tags -split ";"
 
 # Generated
 $version = "$(Get-Date -Format yy.MM.dd).$($Env:APPVEYOR_BUILD_NUMBER)";
-$file = Get-Item -Path ".\src\$($moduleName).*" | Where-Object { $_.Name -match ".*\.(psm1|ps1)" }
+
+$staging = New-Item ".\staging" -ItemType Directory
+
+Write-Output "Installing Formatter"
+Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
+
+Write-Output "Copying and cleaning code"
+Get-ChildItem -Path "src" -Filter "*.psm1" | ForEach-Object {
+    Invoke-Formatter -ScriptDefinition (Get-Content $_.FullName -Raw) >> (Join-Path -Path $staging.FullName $_.Name) 
+}
+
+$file = Get-ChildItem -Path $staging -Filter "psm1"
 
 Write-Output "Generating manifest"
-New-ModuleManifest -Path ".\src\$($moduleName).psd1" -Description $description -Author "Tom Bonner" -CompanyName $company -ModuleVersion $version -RootModule $file.Name -FunctionsToExport $functionsToExport -ProjectUri $project -LicenseUri $license -Tags $tags
+$psdFile = Join-Path -Path $staging -ChildPath $($Env:ModuleName).psd1
+New-ModuleManifest -Path $psdFile -Description $Env:Description -Author $Env:Author -CompanyName $Env:Company -ModuleVersion $version -RootModule $file.Name -FunctionsToExport $functionsToExport -ProjectUri $Env:ProjectUri -LicenseUri $Env:LicenseUri -Tags $tags
+
+Write-Output "Copying misc files"
+Copy-Item -Path "LICENSE" -Destination $staging
+Copy-Item -Path "README.md" -Destination $staging
+
+Write-Output "Generating catalog"
+New-FileCatalog -Path $staging -CatalogFilePath (Join-Path -Path $staging -ChildPath "$($Env:ModuleName)).cat")
 
 $tempNugetRepo = New-Item -ItemType Directory ".\nuget-feed\nuget\v2"
 $deployTarget = New-Item -ItemType Directory ".\deploy"
@@ -33,10 +48,8 @@ try
     Write-Output "Registering temp repository"    
     Register-PSRepository -Name "temp" -SourceLocation $tempNugetRepo.FullName
 
-    $moduleName = (Get-Item "src").GetFiles("*.psd1").FullName
-
     Write-Output "Publishing module to temp repository"
-    Publish-Module -Name $moduleName -Repository "temp"
+    Publish-Module -Name $psdFile -Repository "temp"
 
     $package = Get-ChildItem -Filter "*.nupkg" -Recurse
 

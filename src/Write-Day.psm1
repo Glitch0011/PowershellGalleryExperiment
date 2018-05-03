@@ -18,12 +18,9 @@ function Write-Day
     Write-Day outputs the full day
     #>
     [CmdletBinding()]
-    param (
-        
-    )
-
+    param ()
+    
     Write-Output (Get-Date -UFormat "%A")
-
 }
 
 Export-ModuleMember -Function Write-Day
