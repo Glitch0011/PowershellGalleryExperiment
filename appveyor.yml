@@ -5,22 +5,11 @@ environment:
   NuGetApiKey:
     secure: vPuoV+7e5qgXDOi6iZOMgOGQDiA2H5rOvVaGO13SvePSehwTGHHE4W3hSPTlu0zL
 
-install:
-  - ps: Write-Host "Startup"
-
 build_script:
   -  ps: .\Generate-Module.ps1  
 
 artifacts:
   - path: '**\*.nupkg'
-
-deploy:
-  - provider: NuGet
-    server: https://www.powershellgallery.com/api/v2/
-    api_key:
-      secure: vPuoV+7e5qgXDOi6iZOMgOGQDiA2H5rOvVaGO13SvePSehwTGHHE4W3hSPTlu0zL
-    skip_symbols: true
-    artifact: /.*\.nupkg/
 
 deploy_script:
   - ps: Publish-Module -Name (Get-Item ".\src\*.psd1").FullName -NuGetApiKey $Env:NuGetApiKey
