@@ -31,4 +31,4 @@ after_deploy:
 notifications:
   - provider: Webhook
     url:
-      secure: 7ZT0ZVyDmNP7553URWST6Xz9+oHCE6WTRDPTqw1rvh8=
+      secure: 7ZT0ZVyDmNP7553URWST6RsaqDKHJQ9gKXmn9e6Vam8=
