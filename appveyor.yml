@@ -38,7 +38,7 @@ deploy:
     on:
       branch: master
 
-  - provider: Github
+  - provider: GitHub
     description: ""
     auth_token:
       secure: vPuoV+7e5qgXDOi6iZOMgOGQDiA2H5rOvVaGO13SvePSehwTGHHE4W3hSPTlu0zL
