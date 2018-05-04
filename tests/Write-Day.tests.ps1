@@ -7,7 +7,7 @@ if ((Get-ChildItem "src" -ErrorAction SilentlyContinue) -eq $null) {
 $scanFiles = Get-ChildItem -Path $targetDirectory -Recurse -Filter "*.psm1"
 
 Describe "Testing against PSSA rules" {
-    $analysis = Invoke-ScriptAnalyzer -Path $targetDirectory
+    $analysis = Invoke-ScriptAnalyzer -Path $targetDirectory -Recurse
 
     forEach ($failure in $analysis) {
 
