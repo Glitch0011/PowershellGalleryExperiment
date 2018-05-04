@@ -1,6 +1,6 @@
 $targetDirectory = "staging"
 
-if ((Get-ChildItem "src" -ErrorAction SilentlyContinue) -eq $null) { 
+if ((Get-ChildItem $targetDirectory -ErrorAction SilentlyContinue) -eq $null) { 
     Throw "Could not find .\staging" 
 }
 
