@@ -1,6 +1,6 @@
 image:
   - Visual Studio 2017
-  
+
 environment:
   ModuleName: "Write-Day"
   Author: "Tom Bonner"
@@ -11,7 +11,9 @@ environment:
   Tags: "Date;Write"
   NuGetApiKey:
     secure: vPuoV+7e5qgXDOi6iZOMgOGQDiA2H5rOvVaGO13SvePSehwTGHHE4W3hSPTlu0zL
-  
+
+skip_tags: true
+
 init:
   - ps: Update-AppveyorBuild -Version "$(Get-Date -Format yy.MM.dd).$($Env:APPVEYOR_BUILD_NUMBER)"
   
