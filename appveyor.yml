@@ -24,8 +24,8 @@ build_script:
   - ps: .\Generate-Module.ps1
 
 before_test:
-  - ps: Install-Module -Name PSScriptAnalyzer -Scope CurrentUser -Force
-  - ps: Install-Module -Name Pester -Scope CurrentUser -Force
+  - ps: Update-Module -Name PSScriptAnalyzer -Force
+  - ps: Update-Module -Name Pester -Force
   
 test_script:
   - ps: |
