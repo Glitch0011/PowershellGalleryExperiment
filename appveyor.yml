@@ -12,12 +12,14 @@ environment:
   NuGetApiKey:
     secure: vPuoV+7e5qgXDOi6iZOMgOGQDiA2H5rOvVaGO13SvePSehwTGHHE4W3hSPTlu0zL
 
+init:
+  - ps: Update-AppveyorBuild -Version "$(Get-Date -Format yy.MM.dd).$($Env:APPVEYOR_BUILD_NUMBER)"
+  
 build_script:
   - ps: .\Generate-Module.ps1
 
 test_script:
   - ps: |
-      Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
       $results = Invoke-ScriptAnalyzer (Get-Item ".\src\*.psm1").FullName
       if ($results.length -gt 0) {
         throw "Script validation failed"

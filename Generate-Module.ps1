@@ -12,7 +12,7 @@ $functionsToExport = $Env:FunctionsToExport -split ";"
 $tags = $Env:Tags -split ";"
 
 # Generated
-$version = "$(Get-Date -Format yy.MM.dd).$($Env:APPVEYOR_BUILD_NUMBER)";
+$version = $Env:APPVEYOR_BUILD_VERSION
 
 $staging = New-Item ".\staging" -ItemType Directory -Force
 
