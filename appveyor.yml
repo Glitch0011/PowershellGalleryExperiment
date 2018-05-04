@@ -4,6 +4,7 @@ image:
 deploy: off
 
 for:
+-
   branches:
     only:
       - master
