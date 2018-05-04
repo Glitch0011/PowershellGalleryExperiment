@@ -23,6 +23,10 @@ init:
 build_script:
   - ps: .\Generate-Module.ps1
 
+before_test:
+  - ps: Install-Module -Name PSScriptAnalyzer -Scope CurrentUser -Force
+  - ps: Install-Module -Name Pester -Scope CurrentUser -Force
+  
 test_script:
   - ps: |
       $res = Invoke-Pester -Path ".\tests" -OutputFormat "NUnitXml" -OutputFile "TestsResults.xml" -PassThru
