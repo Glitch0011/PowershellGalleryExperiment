@@ -42,7 +42,7 @@ deploy:
     description: ""
     auth_token:
       secure: 18s9Uox34x4O+jldUgWcT8CBaSeKDj5yZ0tqsE3/YqaU3qODoVzGoSkvmU1l2oF9
-    artifact: /.*\.nupgk/
+    artifact: /.*\.nupkg/
     on:
       branch: master
 
