@@ -28,14 +28,23 @@ test_script:
 artifacts:
   - path: '**\*.nupkg'
 
-deploy_script:
-  - ps: |
-      if ($Env:APPVEYOR_REPO_BRANCH -eq "master") {
-        Publish-Module -Name (Get-Item ".\staging\*.psd1").FullName -NuGetApiKey $Env:NuGetApiKey
-        Write-Host "Successfully deployed"
-      } else {
-        Add-AppveyorMessage "Skipping deployment"        
-      }
+deploy:
+  - provider: NuGet
+    server: "https://www.powershellgallery.com/api/v2/package/"
+    api_key:
+      secure: vPuoV+7e5qgXDOi6iZOMgOGQDiA2H5rOvVaGO13SvePSehwTGHHE4W3hSPTlu0zL
+    skip_symbols: true
+    artifact: /.*\.nupkg/
+    on:
+      branch: master
+
+  - provider: Github
+    description: ""
+    auth_token:
+      secure: vPuoV+7e5qgXDOi6iZOMgOGQDiA2H5rOvVaGO13SvePSehwTGHHE4W3hSPTlu0zL
+    artifact: /.*\.nupgk/
+    on:
+      branch: master
 
 notifications:
   - provider: Webhook
