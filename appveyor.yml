@@ -1,15 +1,6 @@
 image:
   - Visual Studio 2017
-
-deploy: off
-
-for:
--
-  branches:
-    only:
-      - master
-  deploy: on
-
+  
 environment:
   ModuleName: "Write-Day"
   Author: "Tom Bonner"
@@ -38,10 +29,13 @@ artifacts:
   - path: '**\*.nupkg'
 
 deploy_script:
-  - ps: Publish-Module -Name (Get-Item ".\staging\*.psd1").FullName -NuGetApiKey $Env:NuGetApiKey
-
-after_deploy:
-  - ps: Write-Host "Successfully deployed"
+  - ps: |
+      if ($Env:APPVEYOR_REPO_BRANCH -eq "master") {
+        Publish-Module -Name (Get-Item ".\staging\*.psd1").FullName -NuGetApiKey $Env:NuGetApiKey
+        Write-Host "Successfully deployed"
+      } else {
+        Add-AppveyorMessage "Skipping deployment"        
+      }
 
 notifications:
   - provider: Webhook
