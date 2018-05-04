@@ -33,10 +33,10 @@ Add-AppveyorMessage "Copying misc files"
 Copy-Item -Path "LICENSE" -Destination $stagingDirectory
 Copy-Item -Path "README.md" -Destination $stagingDirectory
 
-Add-AppveyorMessage "Generating documentation"
-Install-Module -Name platyPS -Scope CurrentUser -Force
-New-ExternalHelp .\docs -OutputPath en-GB\
-Copy-Item -Path "en-GB" -Destination $stagingDirectory
+# Add-AppveyorMessage "Generating documentation"
+# Install-Module -Name platyPS -Scope CurrentUser -Force
+# New-ExternalHelp .\docs -OutputPath en-GB\
+# Copy-Item -Path "en-GB" -Destination $stagingDirectory
 
 # Removed because Install-Module fails with an unsigned catalog
 # Add-AppveyorMessage "Generating catalog"

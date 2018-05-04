@@ -14,8 +14,10 @@
 function Write-Day
 {
     <#
-    .Description
+    .Synopsis
     Write-Day outputs the full day
+    .Description
+    Literally writes the full day ot output
     #>
     [CmdletBinding()]
     param ()
