@@ -35,6 +35,10 @@ New-ModuleManifest -Path $psdFile -Description $Env:Description -Author $Env:Aut
 Add-AppveyorMessage "Copying misc files"
 Copy-Item -Path "LICENSE" -Destination $staging
 Copy-Item -Path "README.md" -Destination $staging
+Add-AppveyorMessage "Generating documentation"
+Install-Module -Name platyPS -Scope CurrentUser -Force
+New-ExternalHelp .\docs -OutputPath en-GB\
+Copy-Item -Path "en-GB" -Destination $stagingDirectory
 
 # Removed because when it isn't signed, it cases the install-module to fail
 #Add-AppveyorMessage "Generating catalog"
