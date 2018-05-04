@@ -18,11 +18,12 @@ Add-AppveyorMessage "Installing Formatter"
 Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
 
 Add-AppveyorMessage "Copying and cleaning code"
-Get-ChildItem -Path "src" -Filter "*.psm1" | ForEach-Object {
-    Invoke-Formatter -ScriptDefinition (Get-Content $_.FullName -Raw) >> (Join-Path -Path $stagingDirectory.FullName $_.Name) 
-}
+Get-ChildItem -Path "src" -Filter "*.psm1" | ForEach-Object {Invoke-Formatter -ScriptDefinition (Get-Content $_.FullName -Raw) >> (Join-Path -Path $stagingDirectory.FullName $_.Name) }
 
-$file = Get-ChildItem -Path $stagingDirectory -Filter "psm1"
+$file = Get-ChildItem -Path $stagingDirectory -Filter "*.psm1"
+if ($file -eq $null) {
+    throw "Could not find *.psm1"
+}
 
 Add-AppveyorMessage "Generating manifest"
 $psdFile = Join-Path -Path $stagingDirectory -ChildPath "$($Env:ModuleName).psd1"
