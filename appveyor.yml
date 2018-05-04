@@ -41,7 +41,7 @@ deploy:
   - provider: GitHub
     description: ""
     auth_token:
-      secure: vPuoV+7e5qgXDOi6iZOMgOGQDiA2H5rOvVaGO13SvePSehwTGHHE4W3hSPTlu0zL
+      secure: 18s9Uox34x4O+jldUgWcT8CBaSeKDj5yZ0tqsE3/YqaU3qODoVzGoSkvmU1l2oF9
     artifact: /.*\.nupgk/
     on:
       branch: master
