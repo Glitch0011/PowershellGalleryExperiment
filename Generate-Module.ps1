@@ -9,43 +9,40 @@ if (Test-Path ".\staging") {
 }
 
 # Properties
-$company = $null
 $functionsToExport = $Env:FunctionsToExport -split ";"
 $tags = $Env:Tags -split ";"
 
-# Generated
-$version = $Env:APPVEYOR_BUILD_VERSION
-
-$staging = New-Item ".\staging" -ItemType Directory -Force
+$stagingDirectory = New-Item ".\staging" -ItemType Directory -Force
 
 Add-AppveyorMessage "Installing Formatter"
 Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
 
 Add-AppveyorMessage "Copying and cleaning code"
 Get-ChildItem -Path "src" -Filter "*.psm1" | ForEach-Object {
-    Invoke-Formatter -ScriptDefinition (Get-Content $_.FullName -Raw) >> (Join-Path -Path $staging.FullName $_.Name) 
+    Invoke-Formatter -ScriptDefinition (Get-Content $_.FullName -Raw) >> (Join-Path -Path $stagingDirectory.FullName $_.Name) 
 }
 
-$file = Get-ChildItem -Path $staging -Filter "psm1"
+$file = Get-ChildItem -Path $stagingDirectory -Filter "psm1"
 
 Add-AppveyorMessage "Generating manifest"
-$psdFile = Join-Path -Path $staging -ChildPath "$($Env:ModuleName).psd1"
-New-ModuleManifest -Path $psdFile -Description $Env:Description -Author $Env:Author -CompanyName $Env:Company -ModuleVersion $version -RootModule $file.Name -FunctionsToExport $functionsToExport -ProjectUri $Env:ProjectUri -LicenseUri $Env:LicenseUri -Tags $tags
+$psdFile = Join-Path -Path $stagingDirectory -ChildPath "$($Env:ModuleName).psd1"
+New-ModuleManifest -Path $psdFile -Description $Env:Description -Author $Env:Author -CompanyName $Env:Company -ModuleVersion $Env:APPVEYOR_BUILD_VERSION -RootModule $file.Name -FunctionsToExport $functionsToExport -ProjectUri $Env:ProjectUri -LicenseUri $Env:LicenseUri -Tags $tags
 
 Add-AppveyorMessage "Copying misc files"
-Copy-Item -Path "LICENSE" -Destination $staging
-Copy-Item -Path "README.md" -Destination $staging
+Copy-Item -Path "LICENSE" -Destination $stagingDirectory
+Copy-Item -Path "README.md" -Destination $stagingDirectory
+
 Add-AppveyorMessage "Generating documentation"
 Install-Module -Name platyPS -Scope CurrentUser -Force
 New-ExternalHelp .\docs -OutputPath en-GB\
 Copy-Item -Path "en-GB" -Destination $stagingDirectory
 
-# Removed because when it isn't signed, it cases the install-module to fail
-#Add-AppveyorMessage "Generating catalog"
-#New-FileCatalog -Path $staging -CatalogFilePath (Join-Path -Path $staging -ChildPath "$($Env:ModuleName).cat")
+# Removed because Install-Module fails with an unsigned catalog
+# Add-AppveyorMessage "Generating catalog"
+# New-FileCatalog -Path $stagingDirectory -CatalogFilePath (Join-Path -Path $stagingDirectory -ChildPath "$($Env:ModuleName).cat")
 
 $tempNugetRepo = New-Item -ItemType Directory ".\nuget-feed\nuget\v2"
-$deployTarget = New-Item -ItemType Directory ".\deploy"
+$deploymentDirectory = New-Item -ItemType Directory ".\deploy"
 
 try
 {
@@ -61,7 +58,7 @@ try
     $package = Get-ChildItem -Filter "*.nupkg" -Recurse
 
     Add-AppveyorMessage "Moving package to output"
-    Move-Item -Path $package.FullName -Destination $deployTarget.FullName
+    Move-Item -Path $package.FullName -Destination $deploymentDirectory.FullName
 }
 finally 
 {
