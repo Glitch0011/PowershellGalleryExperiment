@@ -12,7 +12,7 @@ if ($targetDirectory -eq $null) {
 
 $scanFiles = Get-ChildItem -Path $targetDirectory -Recurse -Filter "*.psm1"
 
-$scanFiles | ForEach-Object {
+$scanFiles | % {
 
     Describe "Testing ${$_.Name} against PSSA rules" {
         $analysis = Invoke-ScriptAnalyzer -Path $_.FullName -Recurse
