@@ -22,10 +22,6 @@ init:
   
 build_script:
   - ps: .\Generate-Module.ps1
-
-before_test:
-  - ps: Update-Module -Name PSScriptAnalyzer -Force
-  - ps: Update-Module -Name Pester -Force
   
 test_script:
   - ps: |
