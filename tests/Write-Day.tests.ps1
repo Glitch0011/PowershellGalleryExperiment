@@ -1,18 +1,27 @@
-$targetDirectory = "staging"
+$targetDirectory = $null
 
-if ((Get-ChildItem $targetDirectory -ErrorAction SilentlyContinue) -eq $null) { 
-    Throw "Could not find .\staging" 
+if (Test-Path -Path "staging") {
+    $targetDirectory = Get-ChildItem "staging"
+} elseif (Test-Path -Path "src") {
+    $targetDirectory = Get-ChildItem "src"
+}
+
+if ($targetDirectory -eq $null) { 
+    Throw "Could not find source-directory" 
 }
 
 $scanFiles = Get-ChildItem -Path $targetDirectory -Recurse -Filter "*.psm1"
 
-Describe "Testing against PSSA rules" {
-    $analysis = Invoke-ScriptAnalyzer -Path $targetDirectory -Recurse
+$scanFiles | % {
 
-    forEach ($failure in $analysis) {
-
-        It "$($failure.ScriptName)#$($failure.Line) should pass $($failure.RuleName)" {
-            $failure.Message | Should Be $null
+    Describe "Testing against PSSA rules" {
+        $analysis = Invoke-ScriptAnalyzer -Path $_.FullName -Recurse
+    
+        forEach ($failure in $analysis) {
+    
+            It "$($failure.ScriptName)#$($failure.Line) should pass $($failure.RuleName)" {
+                $failure.Message | Should Be $null
+            }
         }
     }
 }
