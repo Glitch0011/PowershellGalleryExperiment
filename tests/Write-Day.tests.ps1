@@ -20,7 +20,7 @@ $scanFiles | % {
         forEach ($failure in $analysis) {
     
             It "$($failure.ScriptName)#$($failure.Line) should pass $($failure.RuleName)" {
-                $failure.Message | Should Be $null
+                throw $failure.Message
             }
         }
     }
